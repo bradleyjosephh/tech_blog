@@ -1,6 +1,6 @@
 const User = require('./User.js')
 const Post = require('./Post.js')
-const Comments = require('./Note.js')
+const Comments = require('./Comments.js')
 
 
 User.hasMany(Post, { foreignKey: 'uid' })
