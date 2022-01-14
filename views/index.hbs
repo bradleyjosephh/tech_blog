@@ -1,8 +1,8 @@
-<div class="container">
+<main>
+<main class="container">
     <div class="row bg-light p-5 rounded-lg mb-3 mt-3">
-      <h1 class="display-4">Not Facebook</h1>
-      <p class="lead">This is a simple blog app that is definitely NOT a facebook clone. Why would you think that?
-        Pretty weird.</p>
+      <h1 class="display-4">Tech Blog</h1>
+      <p class="lead">Come post your thoughts about the latest tech development and trends! Your opinion is in need of being shared!</p>
       <hr class="my-4">
     </div>
     <div class="row">
@@ -43,3 +43,45 @@
         </form>
       </div>
     </div>
+    </main>
+     <script>
+
+     function registerUser() {
+        let newUser = {
+          username: document.getElementById('rUsername').value,
+          email: document.getElementById('rEmail').value,
+          password: document.getElementById('rPassword').value
+        }
+        axios.post('/api/users/register', newUser)
+        .then(res=> {
+          console.log('user created')
+          document.getElementById('rUsername').value = ''
+          document.getElementById('rEmail').value = ''
+          document.getElementById('rPassword').value = ''
+        })
+      }
+
+    document.getElementById('register').addEventListener('click', event => {
+      event.preventDefault()
+      registerUser()
+    })
+
+    function loginUser() {
+      let oldUser = {
+        username: document.getElementById('lUsername').value,
+        password: document.getElementById('lPassword').value
+      }
+      axios.post('/api/users/login', oldUser)
+      .then(res=> {
+        console.log(res)
+        localStorage.setItem('token', res.data.token)
+        location = '/'
+
+      })
+    }
+
+    document.getElementById('login').addEventListener('click', event => {
+      event.preventDefault()
+      loginUser()
+    })
+    </script>

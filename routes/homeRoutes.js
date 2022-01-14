@@ -1,9 +1,13 @@
+const res = require('express/lib/response')
+
 const app = require('express').Router()
 
 app.get('/', (req, res) => {
-    res.render('/')
+    res.render('index')
 })
 
-// app.get('/posts', )
+app.get('/posts', (req, res) => {
+    res.render('posts')
+})
 
 module.exports = app
