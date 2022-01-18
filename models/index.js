@@ -13,4 +13,4 @@ Post.hasMany(Comments, { foreignKey: 'pid' })
 Comments.belongsTo(Post, { foreignKey: 'pid' })
 
 
-module.exports = { User, Post, Comments }
+module.exports = { User, Comments, Post}

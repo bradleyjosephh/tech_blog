@@ -1,0 +1,47 @@
+ <main>
+ <p class="lead">Here are {{username}}'s posts!</p>
+    </div>
+    <div id="posts" class="row"></div>
+  </div>
+  </main>
+
+  <script>
+  
+      async function getProfile() {
+        try {
+          const { data: user } = await axios.get('/api/users/profile', {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+          })
+          return user
+
+        } catch (err) {
+          location = '/'
+        }
+      }
+
+      async function renderPost({ title, body }) {
+        const postElem = document.createElement('div')
+        postElem.innerHTML = `
+              <div class="row bg-light p-5 rounded-md mb-2 mt-2">
+                <h3>${title}</h3>
+                <p class="lead">${body}</p>
+                <hr class="my-4">
+              </div>
+            `
+        document.getElementById('posts').prepend(postElem)
+      }
+
+      async function renderPosts() {
+        const { posts } = await getProfile()
+
+        posts.forEach(post => renderPost(post))
+      }
+
+      async function renderUsername() {
+        const username = localStorage.getItem('username')
+
+        document.getElementById('username').textContent = username
+      }
+  </script>

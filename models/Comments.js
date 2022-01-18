@@ -7,6 +7,6 @@ Comments.init({
     type: DataTypes.STRING,
     allowNull: false
   }
-}, { sequelize, modelName: 'note' })
+}, { sequelize, modelName: 'comments' })
 
 module.exports = Comments

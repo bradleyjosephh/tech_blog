@@ -10,4 +10,8 @@ app.get('/posts', (req, res) => {
     res.render('posts')
 })
 
+app.get('/profile', (req, res) => {
+    res.render('profile')
+})
+
 module.exports = app

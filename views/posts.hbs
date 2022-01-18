@@ -1,73 +1,97 @@
 <main>
-<div class="row">
-      <form>
-        <div class="mb-3">
-          <label for="title" class="form-label">Title</label>
-          <input type="text" class="form-control" id="title">
-        </div>
-        <div class="mb-3">
-          <label for="body" class="form-label">Body</label>
-          <textarea class="form-control" name="body" id="body" cols="30" rows="10"></textarea>
-        </div>
-        <button id="post" type="submit" class="btn btn-primary">Create Post</button>
-      </form>
-    </div>
-    <div id="posts" class="row"></div>
+  <div class="row">
+    <form>
+      <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
+        <input type="text" class="form-control" id="title">
+      </div>
+      <div class="mb-3">
+        <label for="body" class="form-label">Body</label>
+        <textarea class="form-control" name="body" id="body" cols="30" rows="10"></textarea>
+      </div>
+      <button id="post" type="submit" class="btn btn-primary">Create Post</button>
+    </form>
   </div>
-  </main>
-
-  
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
-  <script>
+  <div id="posts" class="row"></div>
+  </div>
+</main>
 
 
-    function createPost() {
-      let newPost = {
-        title: document.getElementById('title').value,
-        body: document.getElementById('body').value
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+
+
+  function createPost() {
+    let newPost = {
+      title: document.getElementById('title').value,
+      body: document.getElementById('body').value
+    }
+    axios.post('/api/posts', newPost, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
-      axios.post('/api/posts', newPost,  {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      })
-      .then(res=> {
+    })
+      .then(res => {
         console.log(res)
+        location.reload()
       })
-      }
+  }
 
-      document.getElementById("post").addEventListener('click', event => {
-        event.preventDefault()
-        createPost()
-      })
+  document.getElementById("post").addEventListener('click', event => {
+    event.preventDefault()
+    createPost()
+  })
 
-      axios.get('/api/posts', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        })
-        .then(res=> {
+  axios.get('/api/posts', {
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  })
+    .then(res => {
 
-          console.log(res.data)
-          let posts = res.data
-          posts.forEach(post => {
-            let postElem = document.createElement('div')
-            postElem.innerHTML = `
+      console.log(res.data)
+      let posts = res.data
+      posts.forEach(post => {
+        let postElem = document.createElement('div')
+        postElem.innerHTML = `
             <h3 class="goToPost" data-postid="${post.id}"> ${post.title} </h3>
             <h5> posted by ${post.User.username} </h5>
             <p> ${post.body} </p>
+            <aside id="previouscomments-${post.id}"></aside>
+            <input type="text" id="commentsinput-${post.id}" class="textinput" />
+            <button onclick="saveComment(event)" id="comments-${post.id}" type="submit" class="savecomment btn btn-primary">Comment</button>
             `
-            document.getElementById('posts').prepend(postElem)
-          })
-          
-        })
+        document.getElementById('posts').prepend(postElem)
+        post.comments.forEach(comments => {
+          console.log(comments)
 
-        document.addEventListener('click', event => {
-          if(event.target.classList.contains('goToPost')){
-            console.log('ping')
-            localStorage.setItem('postId', event.target.dataset.postid)
-            location = '/post'
-          }
+          let commentsElem = document.createElement('div')
+          commentsElem.innerHTML = `
+          ${comments.body}
+          
+          `
+          document.getElementById(`previouscomments-${post.id}`).append(commentsElem)
         })
-  </script>
+      })
+
+    })
+
+  function saveComment(event) {
+
+    var commentid = event.target.id.split("-")[1]
+    console.log(commentid)
+    var commentTxt = document.getElementById(`commentsinput-${commentid}`).value
+    console.log('ping', commentid, commentTxt)
+
+    axios.post('/api/comments' + commentid, { body: commentTxt }, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+      .then(res => {
+        console.log(res)
+      })
+  }
+
+</script>

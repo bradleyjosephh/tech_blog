@@ -23,18 +23,6 @@ console.log('user got' ,user)
   })
 })
 
-// router.post('/users/login', (req, res) => {
-//   User.authenticate()(req.body.username, req.body.password, (err, user) => {
-//     if (err) { console.log(err) }
-//     req.session.loggedIn = true
-//     req.session.userId = user.id
-//     req.session.username = user.username
-//     res.json(user ? {
-//       username: user.username,
-//       token: jwt.sign({ id: user.id }, process.env.SECRET)
-//     } : null)
-//   })
-// })
 
 router.get('/users/profile', passport.authenticate('jwt'), (req, res) => res.json(req.user))
 
@@ -44,10 +32,5 @@ router.get('/users/:id', async function ({ params: { id } }, res) {
   res.json(user)
 })
 
-// POST one user
-// router.post('/users', async function ({ body }, res) {
-//   const user = await User.create(body)
-//   res.json(user)
-// })
 
 module.exports = router
